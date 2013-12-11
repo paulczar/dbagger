@@ -1,0 +1,58 @@
+#!/usr/bin/env ruby
+
+require 'json'
+require 'optparse'
+require 'dbagger'
+
+options = {}
+
+opt_parser = OptionParser.new do |opt|
+  opt.banner = "Usage: dbagger -u <username> -g <group1,group2>"
+  opt.separator  ""
+  opt.separator  "Options"
+
+  opt.on("-u","--username USERNAME","Username you want to create") do |username|
+    options[:username] = username
+  end
+
+  opt.on("-i","--gh-username USERNAME","Github username if different to --username") do |gh_username|
+    options[:gh_username] = gh_username
+  end
+
+  opt.on("-g","--groups GROUP1,GROUP2","Comma seperated list of groups to add user to") do |groups|
+    options[:groups] = groups
+  end
+
+  opt.on("-a","--api 'https://api.github.com'","defaults to 'https://api.github.com' if not set") do |github_api|
+    options[:github_api] = github_api.sub(/\/+$/,'')
+  end
+
+  opt.on("-s","--shell '/bin/bash'","defaults to '/bin/bash' if not set") do |shell|
+    options[:shell] = shell
+  end
+
+  opt.on("-a","--api github_API_URI","defaults to 'https://api.github.com' if not set") do |github_api|
+    options[:github_api] = github_api.sub(/\/+$/,'')
+  end
+
+  opt.on("-h","--help","help") do
+    puts opt_parser
+  end
+end
+
+opt_parser.parse!
+
+options[:github_api] ||= ENV['github_api'] ||= 'https://api.github.com'
+options[:shell] ||= '/bin/bash'
+options[:gh_username] ||= options[:username]
+if options[:username] && options[:groups]
+  if databag = Dbagger.collect_data(options)
+    puts databag.to_json
+    puts options if ENV['DEBUG']
+  else
+   puts 'something went wrong,  check user username and api endpoint'
+  end
+else
+  puts opt_parser
+end
+
