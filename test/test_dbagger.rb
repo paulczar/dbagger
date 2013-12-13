@@ -33,6 +33,6 @@ class DbaggerTest < Test::Unit::TestCase
   def test_dbagger
     stubs
     result = Dbagger.collect_data({:username=>"username", :groups=>"group", :github_api=>"http://api.server", :shell=>"shell", :gh_username=>"gh_username"})
-    assert_equal result, {:id=>"username", :ssh_keys=>["ssh-rsa blahblahblahimadirtytramp"], :groups=>["group"], :shell=>"shell", :comment=>"name"}
+    assert_equal result, {:id=>"username", :ssh_keys=>["ssh-rsa blahblahblahimadirtytramp"], :groups=>["group"], :shell=>"shell", :comment=>"name", :password=>"*"}
   end
 end

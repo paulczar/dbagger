@@ -20,7 +20,7 @@ opt_parser = OptionParser.new do |opt|
   end
 
   opt.on("-g","--groups GROUP1,GROUP2","Comma seperated list of groups to add user to") do |groups|
-    options[:groups] = groups
+    options[:groups] = groups.split(',')
   end
 
   opt.on("-a","--api 'https://api.github.com'","defaults to 'https://api.github.com' if not set") do |github_api|
@@ -35,16 +35,18 @@ opt_parser = OptionParser.new do |opt|
     options[:github_api] = github_api.sub(/\/+$/,'')
   end
 
+  opt.on("-p","--password $1$XXXXXX","encrypted password.  If left blank will set to '*'") do |password|
+    options[:password] = password
+  end
+
   opt.on("-h","--help","help") do
+    options[:help] = true
     puts opt_parser
   end
 end
 
 opt_parser.parse!
 
-options[:github_api] ||= ENV['github_api'] ||= 'https://api.github.com'
-options[:shell] ||= '/bin/bash'
-options[:gh_username] ||= options[:username]
 if options[:username] && options[:groups]
   if databag = Dbagger.collect_data(options)
     puts databag.to_json
@@ -53,6 +55,6 @@ if options[:username] && options[:groups]
    puts 'something went wrong,  check user username and api endpoint'
   end
 else
-  puts opt_parser
+  puts opt_parser unless options[:help]
 end
 

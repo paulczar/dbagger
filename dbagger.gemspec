@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = %q{dbagger}
-  s.version = "0.1.2"
+  s.version = "0.1.4"
   s.date = %q{2013-12-12}
   s.summary = 'creates user databags from github api results'
   s.description = <<EOF
